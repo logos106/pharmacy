@@ -24,6 +24,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'User',
+    tableName: 'users',
     scopes: {
       // include hash with this scope
       withPassword: { attributes: {} },
