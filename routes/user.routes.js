@@ -6,6 +6,7 @@ const verifyToken = require('../middleware/verify-token');
 const userController = require('../controller/user.controller');
 
 router.post('/register', registerSchema, register);
+router.get('/confirm/:email/:token', confirm);
 router.post('/login', authenticateSchema, authenticate);
 router.get('/logout', verifyToken, logout);
 
@@ -25,12 +26,25 @@ function registerSchema(req, res, next) {
 
 function register(req, res, next) {
   userController
-    .create(req.body)
+    .create(req)
     .then(() => {
-      res.json({ message: 'Registration successful' });
+      res.json({ message: 'Snet a confirmation email to your address' });
     })
     .catch(err => {
       if (err == '1') res.status(200).send({code: 101, message: 'This Email Address is already taken.'})
+      if (err == '2') res.status(200).send({code: 102, message: 'Failed to send confirmation email.'})
+    });
+}
+
+function confirm(req, res, next) {
+  userController
+    .confirm(req.body)
+    .then(() => {
+      res.json({ message: 'Email verification was successful' });
+    })
+    .catch(err => {
+      if (err == '1') res.status(200).send({code: 101, message: 'This Email Address is already taken.'})
+      if (err == '2') res.status(200).send({code: 102, message: 'Failed to send confirmation email.'})
     });
 }
 

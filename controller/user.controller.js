@@ -1,12 +1,13 @@
 require("dotenv").config();
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-var nodemailer = require('nodemailer');
-
+const nodemailer = require('nodemailer');
+  
 db = require("../models");
 
 module.exports = {
   create,
+  confirm,
   authenticate,
   logout
 };
@@ -37,7 +38,8 @@ function omitPassword(user) {
   return userWithoutPassword;
 }
 
-async function create(params) {
+async function create(req) {
+  const params = req.body
   if (
     await db.User.findOne({
       where: { email: params.email },
@@ -49,36 +51,78 @@ async function create(params) {
   
   // save user
   const user = await db.User.create(params);
-  
+    
   // Send confirmation email
-  await sendConfirmationEmail();
-
+  const token = jwt.sign({ sub: user.id, email: user.email }, process.env.JWT_SECRET, {
+    expiresIn: '1h',
+  });
+  user.token = token;
+  user.aave();
+  
+  const to = params.email;
+  const subject = 'Account Verification Link';
+  const text = 'Hello, ' + ',\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/api/user/confirmation\/' + user.email + '\/' + token + '\n\nThank You!\n'
+  
+  const rv = await sendEmail(to, subject, text);
+  if (rv == 'ok')
+    return 0;
+  else
+    throw '2'
 }
 
-async function sendConfirmationEmail(){
-    // generate token and save
-    var token = new db.Token({ userID: user._id, token: crypto.randomBytes(16).toString('hex') });
-    token.save(function (err) {
-      if(err) {
-          return res.status(500).send({msg:err.message});
+async function sendEmail(to, subject, text) {
+  const transport = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+          user: "nxwang00@gmail.com",
+          pass: "suycpzjcuopcrjkl"
       }
+  });
   
-      // Send email (use verified sender's email address & generated API_KEY on SendGrid)
-      const transporter = nodemailer.createTransport(
-          sendgridTransport({
-              auth:{
-                  api_key:'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',
-              }
-          })
-      )
-      var mailOptions = { from: 'gerardkasemba@gmail.com', to: user.email, subject: 'Account Verification Link', text: 'Hello '+ req.body.name +',\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/confirmation\/' + user.email + '\/' + token.token + '\n\nThank You!\n' };
-      transporter.sendMail(mailOptions, function (err) {
-          if (err) { 
-              return res.status(500).send({msg:'Technical Issue!, Please click on resend for verify your Email.'});
-          }
-          return res.status(200).send('A verification email has been sent to ' + user.email + '. It will be expire after one day. If you not get verification Email click on resend token.');
-      })
-    })
+  var mailOptions = {
+      from: '"Pharmacy administrator" <nxwang00@gmail.com',
+      to: to,
+      subject: subject,
+      text: text,
+      html: '<p>' + text + ' </p>'
+  };
+    
+  transport.sendMail(mailOptions, (error, info) => {
+      if (error) {
+          console.log(error);
+          return 'failure'
+      }
+      return 'success'
+  });
+}
+
+async function confirm(params) {
+  db.User.findOne({ email: params.email, token: params.token }, function (err, user) {
+    // token is not found into database i.e. token may have expired 
+    if (!user)
+      throw '1'; // Invalid email or token
+    
+    // Check if not expired
+    const token = user.token;
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const expiresAt = decoded.getExpiresAt();
+    if (!expiresAt.before(new Date()))
+      throw '3';  // Token expired
+
+    // user is already verified
+    if (user.isVerified)
+      throw '2'; // Already verified
+        
+    user.isVerified = true;
+    user.save(function (err) {
+      // error occur
+      if(err)
+          throw '3'
+        
+      // account successfully verified
+      return 1;
+    });
+  });
 }
 
 async function logout(email) {
