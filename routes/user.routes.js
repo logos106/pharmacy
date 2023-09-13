@@ -9,6 +9,9 @@ router.post('/register', registerSchema, register);
 router.get('/confirm/:email/:token', confirm);
 router.post('/login', authenticateSchema, authenticate);
 router.get('/logout', verifyToken, logout);
+router.get('/test', function(req, res, next) {
+  res.send('ok')
+});
 
 module.exports = router;
 
