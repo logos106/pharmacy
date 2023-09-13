@@ -64,7 +64,7 @@ async function create(req) {
   const text = 'Hello, ' + ',\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/api/user/confirmation\/' + user.email + '\/' + token + '\n\nThank You!\n'
   
   const rv = await sendEmail(to, subject, text);
-  if (rv == 'ok')
+  if (rv == 'success')
     return 1;
   else
     throw '2'
