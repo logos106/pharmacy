@@ -56,8 +56,8 @@ async function create(req) {
   const token = jwt.sign({ sub: user.id, email: user.email }, process.env.JWT_SECRET, {
     expiresIn: '1h',
   });
-  user.token = token;
-  user.aave();
+  user.token = 'token';
+  user.save();
   
   const to = params.email;
   const subject = 'Account Verification Link';
@@ -65,7 +65,7 @@ async function create(req) {
   
   const rv = await sendEmail(to, subject, text);
   if (rv == 'ok')
-    return 0;
+    return 1;
   else
     throw '2'
 }
@@ -118,7 +118,7 @@ async function confirm(params) {
       // error occur
       if(err)
           throw '3'
-        
+
       // account successfully verified
       return 1;
     });
