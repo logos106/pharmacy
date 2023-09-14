@@ -44,7 +44,7 @@ function confirm(req, res, next) {
     .confirm(req.body)
     .then(() => {
       // res.json({ message: 'Email verification was successful' });
-      res.redirect('/?page=login')
+      res.redirect('http://localhost:3000/?page=login')
     })
     .catch(err => {
       if (err == '1') res.status(200).send({code: 101, message: 'This Email Address is already taken.'})
