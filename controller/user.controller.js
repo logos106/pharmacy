@@ -88,13 +88,20 @@ async function sendEmail(to, subject, text) {
       html: '<p>' + text + ' </p>'
   };
     
-  transport.sendMail(mailOptions, (error, info) => {
-      if (error) {
-          console.log(error);
-          return 'failure'
-      }
-      return 'success'
-  });
+  // transport.sendMail(mailOptions, (error, info) => {
+  //     if (error) {
+  //         console.log(error);
+  //         return 'failure'
+  //     }
+  //     return 'success'
+  // });
+
+  transport.sendMail(mailOptions)
+    .then(() => {return 'success'})
+    .catch((err) => {
+      console.log(err);
+      return 'failuer';
+    })
 }
 
 async function confirm(params) {
