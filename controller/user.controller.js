@@ -61,7 +61,7 @@ async function create(req) {
   
   const to = params.email;
   const subject = 'Account Verification Link';
-  const text = 'Hello, ' + ',\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/api/user/confirmation\/' + user.email + '\/' + token + '\n\nThank You!\n'
+  const text = 'Hello, ' + ',\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/api/user/confirm\/' + user.email + '\/' + token + '\n\nThank You!\n'
   
   const rv = await sendEmail(to, subject, text);
   console.log(rv)
