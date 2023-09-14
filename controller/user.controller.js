@@ -93,7 +93,7 @@ async function sendEmail(to, subject, text) {
     return 'success';
   } catch (error) {
     console.error('Error sending email:', error);
-    reutnr 'false';    
+    return 'false';    
   }
 }
 
