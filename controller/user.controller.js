@@ -87,21 +87,14 @@ async function sendEmail(to, subject, text) {
       text: text,
       html: '<p>' + text + ' </p>'
   };
-    
-  // transport.sendMail(mailOptions, (error, info) => {
-  //     if (error) {
-  //         console.log(error);
-  //         return 'failure'
-  //     }
-  //     return 'success'
-  // });
 
-  transport.sendMail(mailOptions)
-    .then(() => {return 'success'})
-    .catch((err) => {
-      console.log(err);
-      return 'failuer';
-    })
+  try {
+    const info = await transport.sendMail(mailOptions);
+    return 'success';
+  } catch (error) {
+    console.error('Error sending email:', error);
+    return 'false';    
+  }
 }
 
 async function confirm(params) {
