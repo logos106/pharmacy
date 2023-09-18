@@ -17,12 +17,15 @@
     "express": "^4.17.1",
     "googleapis": "^126.0.1",
     "http-server": "^14.1.1",
+    "http-status": "^1.7.0",
     "joi": "^17.10.1",
     "jsonwebtoken": "^8.5.1",
+    "moment": "^2.29.4",
     "mysql2": "^2.3.3",
     "nodemailer": "^6.9.5",
     "nodemailer-sendgrid-transport": "^0.2.0",
     "sequelize": "^6.16.1",
-    "sequelize-cli": "^6.6.1"
+    "sequelize-cli": "^6.6.1",
+    "winston": "^3.10.0"
   }
 }

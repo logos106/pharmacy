@@ -126,6 +126,39 @@ async function confirm(params) {
   });
 }
 
+async function resetPassword(email) {
+  if (
+    await db.User.findOne({
+      where: { email: params.email },
+    })
+  )
+    throw '1'; //'This Email Address is already taken.';
+    
+  params.password && (params.password = await bcrypt.hash(params.password, 10));
+  
+  // save user
+  const user = await db.User.create(params);
+    
+  // Send confirmation email
+  const token = jwt.sign({ sub: user.id, email: user.email }, process.env.JWT_SECRET, {
+    expiresIn: '1h',
+  });
+  user.token = 'token';
+  user.save();
+  
+  const to = params.email;
+  const subject = 'Account Verification Link';
+  const text = 'Hello, ' + ',\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/api/user/confirm\/' + user.email + '\/' + token + '\n\nThank You!\n'
+  
+  const rv = await sendEmail(to, subject, text);
+  console.log(rv)
+  if (rv == 'success')
+    return 1;
+  else
+    throw '2'
+}
+
+
 async function logout(email) {
   const user = await db.User.scope('withPassword').findOne({
     where: { email },

@@ -1,6 +1,6 @@
-module.exports = validateRequest;
+module.exports = validate;
 
-function validateRequest(req, next, schema) {
+function validate(req, next, schema) {
   const options = {
     abortEarly: false, // include all errors
     allowUnknown: true, // ignore unknown props

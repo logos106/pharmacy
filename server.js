@@ -1,8 +1,9 @@
 const express = require('express');
-const router = express.Router();
+const routes = require('./routes/v1');
 const cors = require('cors')
 const app = express();
 const bodyParser = require("body-parser");
+const { errorConverter, errorHandler } = require('./middlewares/error');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -13,9 +14,13 @@ var corsOptions = {
 }
 app.use(cors(corsOptions))
 
-router.use('/user', require('./routes/user.routes'));
+app.use("/api", routes);
 
-app.use("/api", router);
+// convert error to ApiError, if needed
+app.use(errorConverter);
 
-const port = 5000; //process.env.NODE_ENV === 'production' ? process.env.PORT || 80 : 4000;
+// handle error
+app.use(errorHandler);
+
+const port = process.env.PORT;
 app.listen(port, () => console.log('Pharmacy backend is listening on port' + port));

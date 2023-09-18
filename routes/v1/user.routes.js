@@ -1,12 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const Joi = require('joi');
-const validateRequest = require('../middleware/validate-request');
-const verifyToken = require('../middleware/verify-token');
-const userController = require('../controller/user.controller');
+const verifyToken = require('../../middleware/verify-token');
+const userController = require('../../controller/user.controller');
 
 router.post('/register', registerSchema, register);
 router.get('/confirm/:email/:token', confirm);
+router.get('/forgot/:email', forgot);
 router.post('/login', authenticateSchema, authenticate);
 router.get('/logout', verifyToken, logout);
 router.get('/test', function(req, res, next) {
@@ -15,17 +14,7 @@ router.get('/test', function(req, res, next) {
 
 module.exports = router;
 
-function registerSchema(req, res, next) {
-  const schema = Joi.object({
-    firstName: Joi.string().required(),
-    lastName: Joi.string().required(),
-    email: Joi.string().required(),
-    password: Joi.string().min(6).required(),
-    role: Joi.string().required(),
-  });
 
-  validateRequest(req, next, schema);
-}
 
 function register(req, res, next) {
   userController
@@ -44,7 +33,19 @@ function confirm(req, res, next) {
     .confirm(req.body)
     .then(() => {
       // res.json({ message: 'Email verification was successful' });
-      res.redirect('http://localhost:3000/?page=login')
+      res.redirect('http://localhost:3000/?action=register')
+    })
+    .catch(err => {
+      if (err == '1') res.status(200).send({code: 101, message: 'This Email Address is already taken.'})
+      if (err == '2') res.status(200).send({code: 102, message: 'Failed to send confirmation email.'})
+    });
+}
+
+function forgot(req, res, next) {
+  userController
+    .forgot(req.body.email)
+    .then(() => {
+      res.json({ message: 'Snet a confirmation email to your address' });
     })
     .catch(err => {
       if (err == '1') res.status(200).send({code: 101, message: 'This Email Address is already taken.'})
