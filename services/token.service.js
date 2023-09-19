@@ -21,7 +21,7 @@ const generateToken = (userId, expires, type, secret = config.jwt.secret) => {
 const saveToken = async (token, userId, expires, type, blacklisted = false) => {
   const tokenDoc = await db.Token.create({
     token,
-    user: userId,
+    userID: userId,
     expires: expires.toDate(),
     type,
     blacklisted,
