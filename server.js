@@ -1,6 +1,8 @@
 const express = require('express');
 const routes = require('./routes/v1');
-const cors = require('cors')
+const cors = require('cors');
+const passport = require('passport');
+const { jwtStrategy } = require('./config/passport');
 const app = express();
 const bodyParser = require("body-parser");
 const { errorConverter, errorHandler } = require('./middlewares/error');
@@ -13,6 +15,10 @@ var corsOptions = {
     optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 }
 app.use(cors(corsOptions))
+
+// jwt authentication
+app.use(passport.initialize());
+passport.use('jwt', jwtStrategy);
 
 app.use("/api", routes);
 

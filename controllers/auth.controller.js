@@ -9,8 +9,8 @@ const register = catchAsync(async (req, res) => {
 });
 
 const sendVerificationEmail = catchAsync(async (req, res) => {
-  const verifyEmailToken = await tokenService.generateVerifyEmailToken(req.user);
-  await emailService.sendVerificationEmail(req.user.email, verifyEmailToken);
+  const verifyEmailToken = await tokenService.generateVerifyEmailToken(req.body);
+  await emailService.sendVerificationEmail(req.body.email, verifyEmailToken);
   res.status(httpStatus.NO_CONTENT).send();
 });
 
