@@ -6,7 +6,7 @@ module.exports = {
     return queryInterface.sequelize.transaction(transaction => {
       return Promise.all([
         queryInterface.addColumn('tokens', 'type', {
-          type: Sequelize.ENUM('access', 'refresh', 'resetPassword', 'verifyemail')
+          type: Sequelize.ENUM('access', 'refresh', 'resetPassword', 'verifyEmail')
         }, { transaction }),
         queryInterface.addColumn('tokens', 'expires', {
           type: Sequelize.DATE
