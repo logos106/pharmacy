@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
   Token.init({
     userID: DataTypes.INTEGER,
     token: DataTypes.STRING,
-    type: DataTypes.ENUM('access', 'refresh', 'resetPassword', 'verifyemail'),
+    type: DataTypes.ENUM('access', 'refresh', 'resetPassword', 'verifyEmail'),
     expires: DataTypes.DATE,
     blacklisted: DataTypes.BOOLEAN,
   }, {
