@@ -1,0 +1,16 @@
+.category-slider .react-multiple-carousel__arrow--left {
+  left: calc(0% + 1px);
+}
+
+.category-slider .react-multiple-carousel__arrow--right {
+  right: calc(0% + 1px);
+}
+
+.category-slider .react-multiple-carousel__arrow {
+  border-radius: 2px;
+  background: rgba(56, 56, 56, 0.5);
+  min-width: 30px;
+  min-height: 40px;
+  opacity: 1;
+  cursor: pointer;
+}
