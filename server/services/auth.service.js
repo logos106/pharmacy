@@ -21,10 +21,9 @@ const verifyEmail = async (verifyEmailToken) => {
 };
 
 const resetPassword = async (resetPasswordToken, newPassword) => {
-  console.log(resetPasswordToken, newPassword);
   try {
     const resetPasswordTokenDoc = await tokenService.verifyToken(resetPasswordToken, tokenTypes.RESET_PASSWORD);
-    const user = await userService.getUserByPk(resetPasswordTokenDoc.userID);
+    const user = await userService.getUserById(resetPasswordTokenDoc.userID);
     if (!user) {
       throw new Error();
     }
@@ -52,6 +51,7 @@ const logout = async (refreshToken) => {
   if (!refreshTokenDoc) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Not found');
   }
+  console.log(refreshTokenDoc)
   await refreshTokenDoc.destroy();
 };
 
