@@ -24,6 +24,12 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
+    <!-- Font linked from external Google Fonts resource -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito:wght@200;300;400;600;700;800;900&family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
     <title>React App</title>
   </head>
   <body>
@@ -40,4 +46,9 @@
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
   </body>
+  <!-- Required vendor scripts (Do not remove) -->
+  <script src="%PUBLIC_URL%assets/js/jquery-2.2.4.min.js"></script>
+  <script src="%PUBLIC_URL%assets/js/plugins.bundle.js"></script>
+  <!-- Modify theme scripts (Do not remove) -->
+  <script src="%PUBLIC_URL%assets/js/theme.js"></script>
 </html>
