@@ -1,1 +1,15 @@
-dd
+name: Update and restart Pharmacy
+run-name: Logos is trying to deploy
+on: [pushd]
+jobs:
+  Explore-GitHub-Actions:
+    runs-on: self-hosted
+    steps:
+      - name: Changing directory
+        run: cd /home/pharmacy
+      - name: Stopping pm2 service
+        run: pm2 stop app
+      - name: Pulling code
+        run: git pull
+      - name: Starting pm2
+        run: pm2 start app
