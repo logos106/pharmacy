@@ -40,6 +40,10 @@ const loginUserWithEmailAndPassword = async (email, password) => {
   if (!user || (user.password != password)) {
     throw new ApiError(httpStatus.UNAUTHORIZED, 'Incorrect email or password');
   }
+
+  if (!user.isActive) 
+    throw new ApiError(httpStatus.UNAUTHORIZED, 'Not approved yet');
+  
   return user;
 };
 
