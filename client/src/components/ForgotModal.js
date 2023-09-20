@@ -62,7 +62,7 @@ const ForgotModal = (props) => {
           className={`btn btn-primary btn-full btn-medium rounded ${
             !email ? "cursor-auto" : loading ? "cursor-progress" : ""
           }`}
-          disabled={loading ? false : true}
+          disabled={loading ? true : false}
           onClick={onSubmit}
         >
           {loading && (
