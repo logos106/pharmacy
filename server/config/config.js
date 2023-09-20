@@ -2,7 +2,7 @@ const dotenv = require('dotenv');
 const path = require('path');
 const Joi = require('joi');
 
-dotenv.config({ path: path.join(__dirname, '../.env') });
+dotenv.config({ path: path.join(__dirname, '../../.env') });
 
 const envVarsSchema = Joi.object()
   .keys({
@@ -22,7 +22,9 @@ module.exports = {
   env: envVars.NODE_ENV,
   port: envVars.PORT,
   jwt: {
-    secret: envVars.JWT_SECRET
+    secret: envVars.JWT_SECRET,
+    verifyEmailExpirationMinutes: envVars.JWT_VERIFY_EXPIRE_MINUTE,
+    resetPasswordExpirationMinutes: envVars.JWT_RESET_EXPIRE_MINUTE,
   },
   email: {
     service: "gmail",

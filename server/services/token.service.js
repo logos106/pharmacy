@@ -58,18 +58,29 @@ const generateVerifyEmailToken = async (user) => {
 };
 
 const verifyToken = async (token, type) => {
-  const payload = jwt.verify(token, config.jwt.secret);
-  const tokenDoc = await db.Token.findOne({ token, type, user: payload.sub, blacklisted: false });
+  const payload = jwt.verify(token, config.jwt.secret);    
+  const tokenDoc = await db.Token.findOne({ token, type, userID: payload.sub, blacklisted: false });
   if (!tokenDoc) {
     throw new Error('Token not found');
   }
   return tokenDoc;
 };
 
+const generateResetPasswordToken = async (email) => {
+  const user = await userService.getUserByEmail(email);
+  if (!user) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'No users found with this email');
+  }
+  const expires = moment().add(config.jwt.resetPasswordExpirationMinutes, 'minutes');
+  const resetPasswordToken = generateToken(user.id, expires, tokenTypes.RESET_PASSWORD);
+  await saveToken(resetPasswordToken, user.id, expires, tokenTypes.RESET_PASSWORD);
+  return resetPasswordToken;
+};
 
 module.exports = {
   generateAuthTokens,
   generateVerifyEmailToken,
   saveToken,
   verifyToken,
+  generateResetPasswordToken,
 };

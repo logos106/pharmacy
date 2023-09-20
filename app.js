@@ -1,11 +1,12 @@
 const express = require('express');
-const routes = require('./routes/v1');
+const path = require("path");
+const routes = require('./server/routes/v1');
 const cors = require('cors');
 const passport = require('passport');
-const { jwtStrategy } = require('./config/passport');
+const { jwtStrategy } = require('./server/config/passport');
 const app = express();
 const bodyParser = require("body-parser");
-const { errorConverter, errorHandler } = require('./middlewares/error');
+const { errorConverter, errorHandler } = require('./server/middlewares/error');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -20,13 +21,18 @@ app.use(cors(corsOptions))
 app.use(passport.initialize());
 passport.use('jwt', jwtStrategy);
 
+// Routes for backend API
 app.use("/api", routes);
 
 // convert error to ApiError, if needed
 app.use(errorConverter);
-
-// handle error
 app.use(errorHandler);
+
+// For client static files
+app.use(express.static(path.join(__dirname, "client", "build")));
+app.use("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "client", "build", "index.html"));
+});
 
 const port = process.env.PORT;
 app.listen(port, () => console.log('Pharmacy backend is listening on port' + port));

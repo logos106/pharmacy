@@ -11,18 +11,20 @@ const createUser = async (userBody) => {
 };
 
 const getUserById = async (id) => {
-    return db.User.findById(id);
+    return db.User.findByPk(id);
+};
+
+const getUserByEmail = async (email) => {
+    return db.User.findOne({ where: { email: email } });
 };
 
 const updateUserById = async (userId, updateBody) => {
-    const user = await getUserById(userId);
+    const user = await findByPk(userId);
     if (!user) {
         throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
     }
-    if (updateBody.email && (await User.isEmailTaken(updateBody.email, userId))) {
-        throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
-    }
-    Object.assign(user, updateBody);
+    
+    user.password = updateBody.password;
     await user.save();
     return user;
 };
@@ -30,6 +32,7 @@ const updateUserById = async (userId, updateBody) => {
 module.exports = {
     createUser,
     getUserById,
+    getUserByEmail,
     updateUserById
 };
   
