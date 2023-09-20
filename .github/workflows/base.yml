@@ -1,5 +1,5 @@
-name: Update and restart Pharmacy
-run-name: Logos is trying to deploy
+name: GitHub Actions Demo
+run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
 on: [pushd]
 jobs:
   Explore-GitHub-Actions:
@@ -9,7 +9,7 @@ jobs:
         run: cd /home/pharmacy
       - name: Stopping pm2 service
         run: pm2 stop app
-      - name: Pulling code
+      - name: Pulling git
         run: git pull
-      - name: Starting pm2
+      - name: Starting pm2 service
         run: pm2 start app
