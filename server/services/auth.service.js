@@ -12,9 +12,9 @@ const verifyEmail = async (verifyEmailToken) => {
       if (!user) {
           throw new Error();
       }
-      await db.Token.destroy({where: { userID: user.id, type: tokenTypes.VERIFY_EMAIL }});
-      user.isActive = true;
-      user.save();
+      // await db.Token.destroy({where: { userID: user.id, type: tokenTypes.VERIFY_EMAIL }});
+      // user.isActive = true;
+      // user.save();
   } catch (error) {
       throw new ApiError(httpStatus.UNAUTHORIZED, 'Email verification failed');
   }
@@ -43,7 +43,7 @@ const loginUserWithEmailAndPassword = async (email, password) => {
 
   if (!user.isActive) 
     throw new ApiError(httpStatus.UNAUTHORIZED, 'Not approved yet');
-  
+
   return user;
 };
 
