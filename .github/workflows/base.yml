@@ -5,11 +5,11 @@ jobs:
   Explore-GitHub-Actions:
     runs-on: self-hosted
     steps:
-      - name: Changing directory
-        run: cd /home/pharmacy
       - name: Stopping pm2 service
         run: pm2 stop app
       - name: Pulling git
-        run: git pull
+        run: |
+          cd /home/pharmacy
+          git pull
       - name: Starting pm2 service
         run: pm2 start app
