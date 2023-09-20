@@ -2,7 +2,7 @@ const nodemailer = require('nodemailer');
 const config = require('../config/config');
 const logger = require('../config/logger');
 
-const urlPrefix = 'http://pathoserose.com';
+const urlPrefix = 'http://pathosrose.com';
 
 const transport = nodemailer.createTransport(config.email);
 
