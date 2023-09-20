@@ -12,7 +12,5 @@ router.get('/forgot-email', authController.forgotEmail);
 router.post('/reset-password', authValidation.resetPassword, authController.resetPassword);
 router.post('/login', authValidation.login, authController.login);
 router.post('/logout', authValidation.logout, authController.logout);
-
-// Joe is trying to deploy  
-
+//
 module.exports = router;
