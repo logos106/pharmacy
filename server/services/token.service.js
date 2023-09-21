@@ -59,7 +59,7 @@ const generateVerifyEmailToken = async (email) => {
 
 const verifyToken = async (token, type) => {
   const payload = jwt.verify(token, config.jwt.secret); 
-  const tokenDoc = await db.Token.findOne({where: {token, type, userID: payload.sub, blacklisted: false} });
+  const tokenDoc = await db.Token.findOne({where: {token, type, userID: payload.sub, blacklisted: false}});
   if (!tokenDoc) {
     throw new Error('Token not found');
   }

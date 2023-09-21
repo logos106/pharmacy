@@ -7,14 +7,14 @@ const db = require("../models");
 
 const verifyEmail = async (verifyEmailToken) => {
   try {
-      const verifyEmailTokenDoc = await tokenService.verifyToken(verifyEmailToken, tokenTypes.VERIFY_EMAIL);
-      const user = await userService.getUserById(verifyEmailTokenDoc.userID);
-      if (!user) {
-          throw new Error();
-      }
-      await db.Token.destroy({where: { userID: user.id, type: tokenTypes.VERIFY_EMAIL }});
-      user.isActive = true;
-      user.save();
+    const verifyEmailTokenDoc = await tokenService.verifyToken(verifyEmailToken, tokenTypes.VERIFY_EMAIL);
+    const user = await userService.getUserById(verifyEmailTokenDoc.userID);
+    if (!user) {
+        throw new Error();
+    }
+    await db.Token.destroy({where: { userID: user.id, type: tokenTypes.VERIFY_EMAIL }});
+    user.isActive = true;
+    user.save();
   } catch (error) {
       throw new ApiError(httpStatus.UNAUTHORIZED, 'Email verification failed');
   }
