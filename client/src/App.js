@@ -21,10 +21,12 @@ function App() {
     let isAuthStorage = sessionStorage.getItem("isAuthenticated");
     if (isAuthStorage === "done") {
       let userStorage = sessionStorage.getItem("user");
+      let tokenStorage = sessionStorage.getItem("tokens");
       dispatch(
         login({
           isAuthenticated: true,
           user: JSON.parse(userStorage),
+          tokens: JSON.parse(tokenStorage),
         })
       );
     }

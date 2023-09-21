@@ -40,18 +40,21 @@ const LoginModal = (props) => {
     const result = await post(url, data);
     setLoading(false);
     const respData = result.data;
+    console.log(respData);
     if (respData.code) {
       setError(respData.message);
     } else {
       dispatch(
         login({
           isAuthenticated: true,
-          user: respData,
+          user: respData.user,
+          tokens: respData.tokens,
         })
       );
       onCancel();
       window.sessionStorage.setItem("isAuthenticated", "done");
-      window.sessionStorage.setItem("user", JSON.stringify(respData));
+      window.sessionStorage.setItem("user", JSON.stringify(respData.user));
+      window.sessionStorage.setItem("tokens", JSON.stringify(respData.tokens));
       navigate(from, { replace: true });
     }
   };

@@ -8,13 +8,13 @@ import RegisterModal from "./RegisterModal";
 import ForgotModal from "./ForgotModal";
 import ResetPwdModal from "./ResetPwdModal";
 import { logout } from "../redux/authSlice";
-import { get } from "../utils/axios";
 import { Link } from "react-router-dom";
+import { post } from "../utils/axios";
 
 const Header = () => {
   const dispatch = useDispatch();
 
-  const user = useSelector((state) => state.auth.user);
+  const tokens = useSelector((state) => state.auth.tokens);
   const isAuthed = useSelector((state) => state.auth.isAuthenticated);
 
   const [loginModal, setLoginModal] = useState(false);
@@ -42,13 +42,16 @@ const Header = () => {
   };
 
   const onLogoutClicked = async () => {
-    const url = "user/logout";
-    const result = await get(url);
-    if (result?.data?.message === "Logged out") {
+    const url = "auth/logout";
+    const data = {
+      refreshToken: tokens.refresh.token,
+    };
+    const result = await post(url, data);
+    if (result.data.code) {
+      toast("Something went wrong!");
+    } else {
       dispatch(logout());
       window.sessionStorage.clear();
-    } else {
-      toast("Something went wrong!");
     }
   };
 
