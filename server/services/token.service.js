@@ -19,7 +19,6 @@ const generateToken = (userId, expires, type, secret = config.jwt.secret) => {
 };
 
 const saveToken = async (token, userId, expires, type, blacklisted = false) => {
-  console.log(userId, type)
   const tokenDoc = await db.Token.create({
     token,
     userID: userId,
@@ -50,16 +49,17 @@ const generateAuthTokens = async (user) => {
   };
 };
 
-const generateVerifyEmailToken = async (user) => {
+const generateVerifyEmailToken = async (email) => {
   const expires = moment().add(config.jwt.verifyEmailExpirationMinutes, 'minutes');
+  const user = await userService.getUserByEmail(email); 
   const verifyEmailToken = generateToken(user.id, expires, tokenTypes.VERIFY_EMAIL);
   await saveToken(verifyEmailToken, user.id, expires, tokenTypes.VERIFY_EMAIL);
   return verifyEmailToken;
 };
 
 const verifyToken = async (token, type) => {
-  const payload = jwt.verify(token, config.jwt.secret);    
-  const tokenDoc = await db.Token.findOne({ token, type, userID: payload.sub, blacklisted: false });
+  const payload = jwt.verify(token, config.jwt.secret); 
+  const tokenDoc = await db.Token.findOne({where: {token, type, userID: payload.sub, blacklisted: false} });
   if (!tokenDoc) {
     throw new Error('Token not found');
   }
