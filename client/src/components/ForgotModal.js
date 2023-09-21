@@ -12,6 +12,11 @@ const ForgotModal = (props) => {
   const [error, setError] = useState("");
 
   const onSubmit = async () => {
+    if (!email) {
+      setError("The Email field is required.");
+      return;
+    }
+
     const url = "auth/forgot-password";
     const data = {
       email,
