@@ -12,19 +12,18 @@ const verifyEmail = async (verifyEmailToken) => {
       if (!user) {
           throw new Error();
       }
-      // await db.Token.destroy({where: { userID: user.id, type: tokenTypes.VERIFY_EMAIL }});
-      // user.isActive = true;
-      // user.save();
+      await db.Token.destroy({where: { userID: user.id, type: tokenTypes.VERIFY_EMAIL }});
+      user.isActive = true;
+      user.save();
   } catch (error) {
       throw new ApiError(httpStatus.UNAUTHORIZED, 'Email verification failed');
   }
 };
 
 const resetPassword = async (resetPasswordToken, newPassword) => {
-  console.log(resetPasswordToken, newPassword);
   try {
     const resetPasswordTokenDoc = await tokenService.verifyToken(resetPasswordToken, tokenTypes.RESET_PASSWORD);
-    const user = await userService.getUserByPk(resetPasswordTokenDoc.userID);
+    const user = await userService.getUserById(resetPasswordTokenDoc.userID);
     if (!user) {
       throw new Error();
     }
@@ -52,6 +51,7 @@ const logout = async (refreshToken) => {
   if (!refreshTokenDoc) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Not found');
   }
+  console.log(refreshTokenDoc)
   await refreshTokenDoc.destroy();
 };
 

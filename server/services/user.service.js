@@ -19,11 +19,10 @@ const getUserByEmail = async (email) => {
 };
 
 const updateUserById = async (userId, updateBody) => {
-    const user = await findByPk(userId);
+    const user = await db.User.findByPk(userId);
     if (!user) {
         throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
     }
-    
     user.password = updateBody.password;
     await user.save();
     return user;

@@ -1,0 +1,15 @@
+name: GitHub Actions Demo
+run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
+on: [push]
+jobs:
+  Explore-GitHub-Actions:
+    runs-on: self-hosted
+    steps:
+      - name: Stopping pm2 service
+        run: pm2 stop app
+      - name: Pulling git
+        run: |
+          cd /home/pharmacy
+          git pull
+      - name: Starting pm2 service
+        run: pm2 start app
