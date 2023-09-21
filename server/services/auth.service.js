@@ -51,7 +51,6 @@ const logout = async (refreshToken) => {
   if (!refreshTokenDoc) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Not found');
   }
-  console.log(refreshTokenDoc)
   await refreshTokenDoc.destroy();
 };
 
