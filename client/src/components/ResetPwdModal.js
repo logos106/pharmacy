@@ -23,6 +23,11 @@ const ResetPwdModal = (props) => {
       return;
     }
 
+    if (newPwd.length < 6) {
+      setError("Password must be longer than 6 characters.");
+      return;
+    }
+
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
     const token = urlParams.get("token");

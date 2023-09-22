@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Modal } from "react-responsive-modal";
 import "react-responsive-modal/styles.css";
 import { login } from "../redux/authSlice";
 import { post } from "../utils/axios";
 import Facebook from "../assets/imgs/facebook.png";
 import Google from "../assets/imgs/google.png";
+import { useGoogleLogin } from "@react-oauth/google";
+import toast from "react-simple-toasts";
 
 const LoginModal = (props) => {
   const { isOpen, onCancel, onNavigate } = props;
@@ -40,7 +42,6 @@ const LoginModal = (props) => {
     const result = await post(url, data);
     setLoading(false);
     const respData = result.data;
-    console.log(respData);
     if (respData.code) {
       setError(respData.message);
     } else {
@@ -59,6 +60,39 @@ const LoginModal = (props) => {
     }
   };
 
+  const onGoogleLogin = useGoogleLogin({
+    onSuccess: async (codeResponse) => {
+      const url = "auth/google";
+      const data = {
+        token: codeResponse.access_token,
+      };
+      setLoading(true);
+      const result = await post(url, data);
+      setLoading(false);
+      const respData = result.data;
+      if (respData.code) {
+        setError(respData.message);
+      } else {
+        dispatch(
+          login({
+            isAuthenticated: true,
+            user: respData.user,
+            tokens: respData.tokens,
+          })
+        );
+        onCancel();
+        window.sessionStorage.setItem("isAuthenticated", "done");
+        window.sessionStorage.setItem("user", JSON.stringify(respData.user));
+        window.sessionStorage.setItem(
+          "tokens",
+          JSON.stringify(respData.tokens)
+        );
+        navigate(from, { replace: true });
+      }
+    },
+    onError: (errorResponse) => toast(errorResponse),
+  });
+
   return (
     <Modal
       open={isOpen}
@@ -74,8 +108,11 @@ const LoginModal = (props) => {
             <button className="btn btn-gray-border btn-full rounded btn-large text-capitalize mb-3">
               <img src={Facebook} alt="" /> Login with Facebook
             </button>
-            <button className="btn btn-gray-border btn-full rounded btn-large text-capitalize">
-              <img src={Google} alt="" /> Login with Google
+            <button
+              className="btn btn-gray-border btn-full rounded btn-large text-capitalize"
+              onClick={onGoogleLogin}
+            >
+              <img src={Google} alt="pharmacy google login" /> Login with Google
             </button>
           </div>
           <div className="col-12 text-center">

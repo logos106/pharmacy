@@ -1,14 +1,22 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import { Modal } from "react-responsive-modal";
 import "react-responsive-modal/styles.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import toast from "react-simple-toasts";
 import Facebook from "../assets/imgs/facebook.png";
 import Google from "../assets/imgs/google.png";
 import { post } from "../utils/axios";
+import { login } from "../redux/authSlice";
+import { useGoogleLogin } from "@react-oauth/google";
 
 const RegisterModal = (props) => {
   const { isOpen, onCancel, onNavigate } = props;
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  let location = useLocation();
+  let from = location.state?.from?.pathname || "/";
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -32,6 +40,10 @@ const RegisterModal = (props) => {
     }
     if (!password) {
       setError("The Password field is required.");
+      return;
+    }
+    if (password.length < 6) {
+      setError("Password must be longer than 6 characters.");
       return;
     }
 
@@ -62,6 +74,39 @@ const RegisterModal = (props) => {
     }
   };
 
+  const onGoogleLogin = useGoogleLogin({
+    onSuccess: async (codeResponse) => {
+      const url = "auth/google";
+      const data = {
+        token: codeResponse.access_token,
+      };
+      setLoading(true);
+      const result = await post(url, data);
+      setLoading(false);
+      const respData = result.data;
+      if (respData.code) {
+        setError(respData.message);
+      } else {
+        dispatch(
+          login({
+            isAuthenticated: true,
+            user: respData.user,
+            tokens: respData.tokens,
+          })
+        );
+        onCancel();
+        window.sessionStorage.setItem("isAuthenticated", "done");
+        window.sessionStorage.setItem("user", JSON.stringify(respData.user));
+        window.sessionStorage.setItem(
+          "tokens",
+          JSON.stringify(respData.tokens)
+        );
+        navigate(from, { replace: true });
+      }
+    },
+    onError: (errorResponse) => toast(errorResponse),
+  });
+
   return (
     <Modal
       open={isOpen}
@@ -78,7 +123,10 @@ const RegisterModal = (props) => {
               <img src={Facebook} alt="" className="mr-1" />
               Register with Facebook
             </button>
-            <button className="btn btn-gray-border btn-full rounded btn-large text-capitalize">
+            <button
+              className="btn btn-gray-border btn-full rounded btn-large text-capitalize"
+              onClick={onGoogleLogin}
+            >
               <img src={Google} alt="" className="mr-1" />
               Register with Google
             </button>
