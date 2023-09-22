@@ -1,8 +1,6 @@
 const httpStatus = require('http-status');
 const catchAsync = require('../utils/catchAsync');
 const { authService, userService, tokenService, emailService } = require('../services');
-const passport = require('passport');
-const Strategy = require('passport-facebook').Strategy;
 
 const LOGIN_URL = 'http://pathosrose.com/?page=login';
 const RESEST_URL = 'http://pathosrose.com/?page=reset-pwd';
@@ -55,27 +53,13 @@ const googleLogin = catchAsync(async (req, res) => {
   res.send({ user, tokens });
 });
 
-passport.use(new Strategy({
-    clientID: "1008962086896923",
-    clientSecret: "89d35b417035a0845f0aa736cd503a47",
-    callbackURL: '/facebook/callback'
-  },
-  function(accessToken, refreshToken, profile, cb) {
-    // save the profile on the Database
-    // Save the accessToken and refreshToken if you need to call facebook apis later on
-    return cb(null, profile);
-}));
-
-const facebookLogin = catchAsync(async (req, res) => {
-  passport.authenticate('facebook');
-  res.status(httpStatus.NO_CONTENT).send();
-});
-
 const facebookLogin2 = catchAsync(async (req, res) => {
-  const { token } = req.body;
-  const user = await authService.loginUserWithFacebook(token);
-  const tokens = await tokenService.generateAuthTokens(user);
-  res.send({ user, tokens });
+  console.log(req.body);
+  res.status(httpStatus.NO_CONTENT).send();
+
+  // const user = await authService.loginUserWithFacebook(token);
+  // const tokens = await tokenService.generateAuthTokens(user);
+  // res.send({ user, tokens });
 });
 
 const logout = catchAsync(async (req, res) => {
@@ -92,7 +76,6 @@ module.exports = {
   resetPassword,
   login,
   googleLogin,
-  facebookLogin,
   facebookLogin2,
   logout
 };
