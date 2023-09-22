@@ -53,13 +53,10 @@ const googleLogin = catchAsync(async (req, res) => {
   res.send({ user, tokens });
 });
 
-const facebookLogin2 = catchAsync(async (req, res) => {
-  console.log(req.body);
-  res.status(httpStatus.NO_CONTENT).send();
-
-  // const user = await authService.loginUserWithFacebook(token);
-  // const tokens = await tokenService.generateAuthTokens(user);
-  // res.send({ user, tokens });
+const facebookLogin = catchAsync(async (req, res) => {
+  const user = await authService.loginUserWithFacebook(req.body.token);
+  const tokens = await tokenService.generateAuthTokens(user);
+  res.send({ user, tokens });
 });
 
 const logout = catchAsync(async (req, res) => {
@@ -76,6 +73,6 @@ module.exports = {
   resetPassword,
   login,
   googleLogin,
-  facebookLogin2,
+  facebookLogin,
   logout
 };

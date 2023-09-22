@@ -75,12 +75,13 @@ const loginUserWithGoogle = async (token) => {
 };
 
 const loginUserWithFacebook = async (token) => {
-  const response = await fetch('https://people.googleapis.com/v1/people/me?personFields=names,emailAddresses', { headers: {Authorization: 'Bearer ' + token}})
+  const url = `https://graph.facebook.com/me?access_token=${token}&fields=id,email,first_name,last_name`;
+  const response = await fetch(url);
   const json = await response.json();
-  console.log(json);
-  const email = json.emailAddresses[0].value;
-  const firstName = json.names[0].givenName;
-  const lastName = json.names[0].familyName;
+  
+  const email = json.email;
+  const firstName = json.first_name;
+  const lastName = json.last_name;
 
   let user = await userService.getUserByEmail(email);
   if (!user) {
@@ -94,7 +95,7 @@ const loginUserWithFacebook = async (token) => {
     }
     user = await userService.createUser(param);  
   }
-  
+
   return user;
 };
 
