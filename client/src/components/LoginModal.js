@@ -112,7 +112,6 @@ const LoginModal = (props) => {
           <div className="col-12">
             <FacebookLogin
               appId="1008962086896923"
-              autoLoad
               callback={onFacebookLogin}
               render={(renderProps) => (
                 <button
