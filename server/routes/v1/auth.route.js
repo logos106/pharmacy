@@ -18,6 +18,14 @@ passport.use(new Strategy({
     return cb(null, profile);
 }));
 
+passport.serializeUser(function(user, cb) {
+    cb(null, user);
+  });
+  
+passport.deserializeUser(function(obj, cb) {
+cb(null, obj);
+});
+
 
 router.post('/register', authValidation.register, authController.register);
 router.post('/send-verification-email', authController.sendVerificationEmail);
