@@ -6,7 +6,7 @@ export const getAxios = () => {
 
   const tokensData = window.sessionStorage.getItem("tokens");
   const tokens = JSON.parse(tokensData);
-  const token = tokens.access.token;
+  const token = tokens?.access.token;
 
   const headers = token
     ? {
