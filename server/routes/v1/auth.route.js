@@ -15,6 +15,9 @@ passport.use(new Strategy({
   function(accessToken, refreshToken, profile, cb) {
     // save the profile on the Database
     // Save the accessToken and refreshToken if you need to call facebook apis later on
+
+    console.log(accessToken, refreshToken, profile);
+    
     return cb(null, profile);
 }));
 
