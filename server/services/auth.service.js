@@ -7,6 +7,7 @@ const config = require('../config/config');
 const db = require("../models");
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 
+
 const verifyEmail = async (verifyEmailToken) => {
   try {
     const verifyEmailTokenDoc = await tokenService.verifyToken(verifyEmailToken, tokenTypes.VERIFY_EMAIL);
@@ -73,6 +74,30 @@ const loginUserWithGoogle = async (token) => {
   return user;
 };
 
+const loginUserWithFacebook = async (token) => {
+  const response = await fetch('https://people.googleapis.com/v1/people/me?personFields=names,emailAddresses', { headers: {Authorization: 'Bearer ' + token}})
+  const json = await response.json();
+  console.log(json);
+  const email = json.emailAddresses[0].value;
+  const firstName = json.names[0].givenName;
+  const lastName = json.names[0].familyName;
+
+  let user = await userService.getUserByEmail(email);
+  if (!user) {
+    const param = {
+      email: email,
+      password: "",
+      firstName: firstName,
+      lastName: lastName,
+      role: "user",
+      isActive: 1
+    }
+    user = await userService.createUser(param);  
+  }
+  
+  return user;
+};
+
 const logout = async (refreshToken) => {
   const refreshTokenDoc = await db.Token.findOne({where: { token: refreshToken, type: tokenTypes.REFRESH, blacklisted: false }});
   if (!refreshTokenDoc) {
@@ -86,5 +111,6 @@ module.exports = {
     resetPassword,
     loginUserWithEmailAndPassword,
     loginUserWithGoogle,
+    loginUserWithFacebook,
     logout
 };
