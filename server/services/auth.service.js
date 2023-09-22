@@ -74,11 +74,11 @@ const loginUserWithGoogle = async (token) => {
   return user;
 };
 
-const loginUserWithFacebook = async (userID, token) => {
-  const url = `https://graph.facebook.com/me?fields=${userID}&access_token=${token}`
+const loginUserWithFacebook = async (token) => {
+  const url = `https://graph.facebook.com/me?access_token=${token}`
   const response = await fetch(url);
   const json = await response.json();
-  console.log(json);
+  console.log(url, json);
 
   // const email = json.emailAddresses[0].value;
   // const firstName = json.names[0].givenName;
