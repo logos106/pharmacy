@@ -19,6 +19,7 @@ app.use(cors(corsOptions))
 
 // jwt authentication
 app.use(passport.initialize());
+app.use(passport.session());
 passport.use('jwt', jwtStrategy);
 
 // Routes for backend API
