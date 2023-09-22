@@ -74,28 +74,30 @@ const loginUserWithGoogle = async (token) => {
   return user;
 };
 
-const loginUserWithFacebook = async (token) => {
-  const response = await fetch('https://people.googleapis.com/v1/people/me?personFields=names,emailAddresses', { headers: {Authorization: 'Bearer ' + token}})
+const loginUserWithFacebook = async (userID, token) => {
+  const url = `https://graph.facebook.com/me?fields=${userID}&access_token=${token}`
+  const response = await fetch(url);
   const json = await response.json();
   console.log(json);
-  const email = json.emailAddresses[0].value;
-  const firstName = json.names[0].givenName;
-  const lastName = json.names[0].familyName;
 
-  let user = await userService.getUserByEmail(email);
-  if (!user) {
-    const param = {
-      email: email,
-      password: "",
-      firstName: firstName,
-      lastName: lastName,
-      role: "user",
-      isActive: 1
-    }
-    user = await userService.createUser(param);  
-  }
-  
-  return user;
+  // const email = json.emailAddresses[0].value;
+  // const firstName = json.names[0].givenName;
+  // const lastName = json.names[0].familyName;
+
+  // let user = await userService.getUserByEmail(email);
+  // if (!user) {
+  //   const param = {
+  //     email: email,
+  //     password: "",
+  //     firstName: firstName,
+  //     lastName: lastName,
+  //     role: "user",
+  //     isActive: 1
+  //   }
+  //   user = await userService.createUser(param);  
+  // }
+  return { user: 'wnag'}
+  // return user;
 };
 
 const logout = async (refreshToken) => {
