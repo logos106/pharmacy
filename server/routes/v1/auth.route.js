@@ -11,7 +11,7 @@ router.get('/forgot-email', authController.forgotEmail);
 router.post('/reset-password', authValidation.resetPassword, authController.resetPassword);
 router.post('/login', authValidation.login, authController.login);
 router.post('/google', authValidation.google, authController.googleLogin);
-router.get('/facebook', authValidation.google, authController.facebookLogin);
+router.get('/facebook', authController.facebookLogin);
 router.post('/logout', authValidation.logout, authController.logout);
 
 module.exports = router;
