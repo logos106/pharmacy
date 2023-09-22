@@ -53,7 +53,6 @@ const loginUserWithEmailAndPassword = async (email, password) => {
 const loginUserWithGoogle = async (token) => {
   const response = await fetch('https://people.googleapis.com/v1/people/me?personFields=names,emailAddresses', { headers: {Authorization: 'Bearer ' + token}})
   const json = await response.json();
-  console.log(json);
   const email = json.emailAddresses[0].value;
   const firstName = json.names[0].givenName;
   const lastName = json.names[0].familyName;
