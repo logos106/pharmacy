@@ -75,10 +75,10 @@ const loginUserWithGoogle = async (token) => {
 };
 
 const loginUserWithFacebook = async (token) => {
-  const url = `https://graph.facebook.com/me?access_token=${token}`
+  const url = `https://graph.facebook.com/me?access_token=${token}&scope=email`
   const response = await fetch(url);
   const json = await response.json();
-  console.log(url, json);
+  console.log(json);
 
   // const email = json.emailAddresses[0].value;
   // const firstName = json.names[0].givenName;
