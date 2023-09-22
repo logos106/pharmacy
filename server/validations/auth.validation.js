@@ -32,7 +32,7 @@ function forgotPassword(req, res, next) {
 function resetPassword(req, res, next) {
   const schema = Joi.object({
     token: Joi.string().required(),
-    password: Joi.string().required(), //.custom(password),
+    password: Joi.string().min(6).required(), //.custom(password),
   });
 
   validate(req, next, schema);
@@ -40,8 +40,15 @@ function resetPassword(req, res, next) {
 
 function login(req, res, next) {
   const schema = Joi.object({
-    email: Joi.string().required(),
-    password: Joi.string().min(6).required(),
+    email: Joi.string().required()
+  });
+
+  validate(req, next, schema);
+}
+
+function google(req, res, next) {
+  const schema = Joi.object({
+    token: Joi.string().required()
   });
 
   validate(req, next, schema);
@@ -61,5 +68,6 @@ module.exports = {
   forgotPassword,
   resetPassword,
   login,
+  google,
   logout
 };
