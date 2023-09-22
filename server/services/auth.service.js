@@ -74,8 +74,9 @@ const loginUserWithGoogle = async (token) => {
   return user;
 };
 
-const loginUserWithFacebook = async (token) => {
-  const url = `https://graph.facebook.com/me?access_token=${token}&scope=email`
+const loginUserWithFacebook = async (uid, token) => {
+  // const url = `https://graph.facebook.com/me?access_token=${token}&scope=email`
+  const url = `https://graph.facebook.com/${uid}?metadata=1&access_token=${token}`;
   const response = await fetch(url);
   const json = await response.json();
   console.log(json);

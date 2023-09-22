@@ -54,7 +54,7 @@ const googleLogin = catchAsync(async (req, res) => {
 });
 
 const facebookLogin = catchAsync(async (req, res) => {
-  const user = await authService.loginUserWithFacebook(req.body.token);
+  const user = await authService.loginUserWithFacebook(req.body.userID, req.body.token);
   const tokens = await tokenService.generateAuthTokens(user);
   res.send({ user, tokens });
 });
