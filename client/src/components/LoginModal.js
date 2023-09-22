@@ -9,6 +9,7 @@ import Facebook from "../assets/imgs/facebook.png";
 import Google from "../assets/imgs/google.png";
 import { useGoogleLogin } from "@react-oauth/google";
 import toast from "react-simple-toasts";
+import FacebookLogin from "react-facebook-login/dist/facebook-login-render-props";
 
 const LoginModal = (props) => {
   const { isOpen, onCancel, onNavigate } = props;
@@ -93,6 +94,10 @@ const LoginModal = (props) => {
     onError: (errorResponse) => toast(errorResponse),
   });
 
+  const onFacebookLogin = (response) => {
+    console.log(response);
+  };
+
   return (
     <Modal
       open={isOpen}
@@ -105,9 +110,19 @@ const LoginModal = (props) => {
       <div className="py-4 mx-2">
         <div className="row pt-3">
           <div className="col-12">
-            <button className="btn btn-gray-border btn-full rounded btn-large text-capitalize mb-3">
-              <img src={Facebook} alt="" /> Login with Facebook
-            </button>
+            <FacebookLogin
+              appId="1008962086896923"
+              autoLoad
+              callback={onFacebookLogin}
+              render={(renderProps) => (
+                <button
+                  className="btn btn-gray-border btn-full rounded btn-large text-capitalize mb-3"
+                  onClick={renderProps.onClick}
+                >
+                  <img src={Facebook} alt="" /> Login with Facebook
+                </button>
+              )}
+            />
             <button
               className="btn btn-gray-border btn-full rounded btn-large text-capitalize"
               onClick={onGoogleLogin}
