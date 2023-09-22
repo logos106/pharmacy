@@ -4,9 +4,9 @@ import { baseURL } from "./constants";
 export const getAxios = () => {
   let axiosInstance;
 
-  const userData = window.sessionStorage.getItem("user");
-  const user = JSON.parse(userData);
-  const token = user?.token;
+  const tokensData = window.sessionStorage.getItem("tokens");
+  const tokens = JSON.parse(tokensData);
+  const token = tokens.access.token;
 
   const headers = token
     ? {

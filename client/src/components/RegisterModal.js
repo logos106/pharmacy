@@ -9,6 +9,7 @@ import Google from "../assets/imgs/google.png";
 import { post } from "../utils/axios";
 import { login } from "../redux/authSlice";
 import { useGoogleLogin } from "@react-oauth/google";
+import FacebookLogin from "react-facebook-login/dist/facebook-login-render-props";
 
 const RegisterModal = (props) => {
   const { isOpen, onCancel, onNavigate } = props;
@@ -107,6 +108,35 @@ const RegisterModal = (props) => {
     onError: (errorResponse) => toast(errorResponse),
   });
 
+  const onFacebookLogin = async (response) => {
+    console.log(response);
+    var accessToken = response.accessToken;
+    const url = "auth/facebook";
+    const data = {
+      token: accessToken,
+    };
+    setLoading(true);
+    const result = await post(url, data);
+    setLoading(false);
+    const respData = result.data;
+    if (respData.code) {
+      setError(respData.message);
+    } else {
+      dispatch(
+        login({
+          isAuthenticated: true,
+          user: respData.user,
+          tokens: respData.tokens,
+        })
+      );
+      onCancel();
+      window.sessionStorage.setItem("isAuthenticated", "done");
+      window.sessionStorage.setItem("user", JSON.stringify(respData.user));
+      window.sessionStorage.setItem("tokens", JSON.stringify(respData.tokens));
+      navigate(from, { replace: true });
+    }
+  };
+
   return (
     <Modal
       open={isOpen}
@@ -119,10 +149,18 @@ const RegisterModal = (props) => {
       <div className="py-4 mx-2">
         <div className="row">
           <div className="col-12">
-            <button className="btn btn-gray-border btn-full rounded btn-large text-capitalize mb-3">
-              <img src={Facebook} alt="" className="mr-1" />
-              Register with Facebook
-            </button>
+            <FacebookLogin
+              appId="1008962086896923"
+              callback={onFacebookLogin}
+              render={(renderProps) => (
+                <button
+                  className="btn btn-gray-border btn-full rounded btn-large text-capitalize mb-3"
+                  onClick={renderProps.onClick}
+                >
+                  <img src={Facebook} alt="" /> Register with Facebook
+                </button>
+              )}
+            />
             <button
               className="btn btn-gray-border btn-full rounded btn-large text-capitalize"
               onClick={onGoogleLogin}
