@@ -3,7 +3,10 @@ const tokenService = require('./token.service');
 const userService = require('./user.service');
 const ApiError = require('../utils/ApiError');
 const { tokenTypes } = require('../config/tokens');
+const config = require('../config/config');
 const db = require("../models");
+const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
+
 
 const verifyEmail = async (verifyEmailToken) => {
   try {
@@ -37,13 +40,61 @@ const resetPassword = async (resetPasswordToken, newPassword) => {
 
 const loginUserWithEmailAndPassword = async (email, password) => {
   const user = await userService.getUserByEmail(email);
-  if (!user || (user.password != password)) {
+  if (!user || user.password != '' || (user.password != password)) {
     throw new ApiError(httpStatus.UNAUTHORIZED, 'Incorrect email or password');
   }
 
   if (!user.isActive) 
     throw new ApiError(httpStatus.UNAUTHORIZED, 'Not approved yet');
 
+  return user;
+};
+
+const loginUserWithGoogle = async (token) => {
+  const response = await fetch('https://people.googleapis.com/v1/people/me?personFields=names,emailAddresses', { headers: {Authorization: 'Bearer ' + token}})
+  const json = await response.json();
+  console.log(json);
+  const email = json.emailAddresses[0].value;
+  const firstName = json.names[0].givenName;
+  const lastName = json.names[0].familyName;
+
+  let user = await userService.getUserByEmail(email);
+  if (!user) {
+    const param = {
+      email: email,
+      password: "",
+      firstName: firstName,
+      lastName: lastName,
+      role: "user",
+      isActive: 1
+    }
+    user = await userService.createUser(param);  
+  }
+  
+  return user;
+};
+
+const loginUserWithFacebook = async (token) => {
+  const response = await fetch('https://people.googleapis.com/v1/people/me?personFields=names,emailAddresses', { headers: {Authorization: 'Bearer ' + token}})
+  const json = await response.json();
+  console.log(json);
+  const email = json.emailAddresses[0].value;
+  const firstName = json.names[0].givenName;
+  const lastName = json.names[0].familyName;
+
+  let user = await userService.getUserByEmail(email);
+  if (!user) {
+    const param = {
+      email: email,
+      password: "",
+      firstName: firstName,
+      lastName: lastName,
+      role: "user",
+      isActive: 1
+    }
+    user = await userService.createUser(param);  
+  }
+  
   return user;
 };
 
@@ -59,5 +110,7 @@ module.exports = {
     verifyEmail,
     resetPassword,
     loginUserWithEmailAndPassword,
+    loginUserWithGoogle,
+    loginUserWithFacebook,
     logout
 };

@@ -1,4 +1,5 @@
 const express = require('express');
+const session = require ('express-session');
 const path = require("path");
 const routes = require('./server/routes/v1');
 const cors = require('cors');
@@ -17,8 +18,11 @@ var corsOptions = {
 }
 app.use(cors(corsOptions))
 
+app.use(require('express-session')({ secret: 'keyboard cat', resave: true, saveUninitialized: true }));
+
 // jwt authentication
 app.use(passport.initialize());
+app.use(passport.session());
 passport.use('jwt', jwtStrategy);
 
 // Routes for backend API
