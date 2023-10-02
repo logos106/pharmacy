@@ -38,6 +38,11 @@ app.use("/", (req, res) => {
   res.sendFile(path.join(__dirname, "client", "build", "index.html"));
 });
 
+app.use(express.static('client2/build'));
+app.use("/admin", (req, res) => {
+  res.sendFile(path.join(__dirname, "client2", "build", "index.html"));
+});
+
 
 const port = process.env.PORT;
 app.listen(port, () => console.log('Pharmacy backend is listening on port' + port));
