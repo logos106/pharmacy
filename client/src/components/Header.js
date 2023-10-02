@@ -8,14 +8,16 @@ import RegisterModal from "./RegisterModal";
 import ForgotModal from "./ForgotModal";
 import ResetPwdModal from "./ResetPwdModal";
 import { logout } from "../redux/authSlice";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { post } from "../utils/axios";
 
 const Header = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const tokens = useSelector((state) => state.auth.tokens);
   const isAuthed = useSelector((state) => state.auth.isAuthenticated);
+  const user = useSelector((state) => state.auth.user);
 
   const [loginModal, setLoginModal] = useState(false);
   const [registerModal, setRegisterModal] = useState(false);
@@ -213,6 +215,11 @@ const Header = () => {
                           aria-labelledby="dropdownMenuButton"
                         >
                           <ul>
+                            {user.role === "admin" && (
+                              <li onClick={() => navigate("/admin/dashboard")}>
+                                <span>Dashboard</span>
+                              </li>
+                            )}
                             <li>
                               <span>Account</span>
                             </li>

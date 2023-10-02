@@ -154,7 +154,7 @@ const RegisterModal = (props) => {
               callback={onFacebookLogin}
               render={(renderProps) => (
                 <button
-                  className="btn btn-gray-border btn-full rounded btn-large text-capitalize mb-3"
+                  className="btn border border-2 btn-gray-border btn-full rounded btn-large text-capitalize mb-3"
                   onClick={renderProps.onClick}
                 >
                   <img src={Facebook} alt="" /> Register with Facebook
@@ -162,7 +162,7 @@ const RegisterModal = (props) => {
               )}
             />
             <button
-              className="btn btn-gray-border btn-full rounded btn-large text-capitalize"
+              className="btn border border-2 btn-gray-border btn-full rounded btn-large text-capitalize"
               onClick={onGoogleLogin}
             >
               <img src={Google} alt="" className="mr-1" />
